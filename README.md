@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ravin — DevOps Engineer Portfolio
 
 A responsive, dark professional portfolio built with React, Vite, Tailwind CSS, and Lucide icons.
@@ -113,3 +114,6 @@ ravin-devops-portfolio/
 ├── tailwind.config.js
 └── vite.config.js
 ```
+=======
+# ravin-devops-portfolio
+>>>>>>> e30a205f9beb273528493199eecd82bd04066394
