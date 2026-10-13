@@ -7,7 +7,8 @@ import {
 
 const GITHUB_USERNAME = 'Ravin-Ravin'
 const EMAIL = 'ravinravin7483@gmail.com'
-const LINKEDIN_URL = 'https://www.linkedin.com/ravin1104' // TODO: replace with your actual LinkedIn profile URL
+const GMAIL_COMPOSE_URL = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}`
+const LINKEDIN_URL = 'https://www.linkedin.com/in/ravin1104?utm_source=share_via&utm_content=profile&utm_medium=member_android'
 const RESUME_PATH = '/Ravin-DevOps-Resume.pdf'
 const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT || ''
 
@@ -84,6 +85,7 @@ function App() {
   const [formState, setFormState] = useState('idle')
   const [formError, setFormError] = useState('')
   const [emailDraft, setEmailDraft] = useState('')
+  const [mailAppDraft, setMailAppDraft] = useState('')
 
   const nav = [
     ['About', '#about'],
@@ -107,12 +109,13 @@ function App() {
         '',
         String(data.get('message') || ''),
       ].join('\n')
-      const params = new URLSearchParams({ subject, body })
-      const draftUrl = `mailto:${EMAIL}?${params.toString()}`
+      const params = new URLSearchParams({ view: 'cm', fs: '1', to: EMAIL, su: subject, body })
+      const draftUrl = `https://mail.google.com/mail/?${params.toString()}`
+      const mailAppParams = new URLSearchParams({ subject, body })
       setEmailDraft(draftUrl)
+      setMailAppDraft(`mailto:${EMAIL}?${mailAppParams.toString()}`)
       setFormState('email')
-      // Attempt to open the user's configured mail app. A visible link is also rendered
-      // below because browsers cannot reliably report whether a mail app opened.
+      // A Gmail compose page works even when no local mail app is configured.
       window.location.href = draftUrl
       return
     }
@@ -164,7 +167,7 @@ function App() {
         <section id="home" className="hero page-wrap">
           <div className="hero-copy">
             <div className="availability"><span className="status-dot" /> OPEN TO DEVOPS & CLOUD OPPORTUNITIES</div>
-            <p className="hero-kicker">Hello, world. I'm</p>
+            <p className="hero-kicker">Hello, I'm</p>
             <h1>Ravin<span className="gradient-text">.</span></h1>
             <h2>DevOps Engineer <span className="muted-separator">/</span> Cloud Enthusiast</h2>
             <p className="hero-description">
@@ -178,7 +181,7 @@ function App() {
             <div className="social-links">
               <a href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noreferrer"><Github size={17} /> GitHub <ArrowUpRight size={13} /></a>
               <a href={LINKEDIN_URL} target="_blank" rel="noreferrer"><Linkedin size={17} /> LinkedIn <ArrowUpRight size={13} /></a>
-              <a href={`mailto:${EMAIL}`}><Mail size={17} /> Email <ArrowUpRight size={13} /></a>
+              <a href={GMAIL_COMPOSE_URL} target="_blank" rel="noreferrer"><Mail size={17} /> Email <ArrowUpRight size={13} /></a>
             </div>
           </div>
 
@@ -345,30 +348,31 @@ function App() {
             <div className="contact-copy">
               <h3>Open to opportunities.</h3>
               <p className="body-copy">I'm interested in entry-level DevOps, Cloud, and Infrastructure roles where I can learn from a team and contribute to automation and deployment work.</p>
-              <a className="contact-method" href={`mailto:${EMAIL}`}><span className="contact-method-icon"><Mail size={18} /></span><span><small>Email</small><strong>{EMAIL}</strong></span><ArrowUpRight size={16} /></a>
+              <a className="contact-method" href={GMAIL_COMPOSE_URL} target="_blank" rel="noreferrer"><span className="contact-method-icon"><Mail size={18} /></span><span><small>Email</small><strong>{EMAIL}</strong></span><ArrowUpRight size={16} /></a>
               <a className="contact-method" href={`https://github.com/${GITHUB_USERNAME}`} target="_blank" rel="noreferrer"><span className="contact-method-icon"><Github size={18} /></span><span><small>GitHub</small><strong>github.com/{GITHUB_USERNAME}</strong></span><ArrowUpRight size={16} /></a>
-              <a className="contact-method" href={LINKEDIN_URL} target="_blank" rel="noreferrer"><span className="contact-method-icon"><Linkedin size={18} /></span><span><small>LinkedIn</small><strong>LinkedIn profile</strong></span><ArrowUpRight size={16} /></a>
+              <a className="contact-method" href={LINKEDIN_URL} target="_blank" rel="noreferrer"><span className="contact-method-icon"><Linkedin size={18} /></span><span><small>LinkedIn</small><strong>LinkedIn.in</strong></span><ArrowUpRight size={16} /></a>
             </div>
             <form className="contact-form panel" onSubmit={handleContact}>
               <div className="form-row">
-                <label>Your name<input name="name" placeholder="Jane Doe" required /></label>
-                <label>Email address<input type="email" name="email" placeholder="jane@company.com" required /></label>
+                <label>Your name<input name="name" placeholder="" required /></label>
+                <label>Email address<input type="email" name="email" placeholder="" required /></label>
               </div>
-              <label>Subject<input name="subject" placeholder="DevOps opportunity / Project enquiry" required /></label>
-              <label>Message<textarea name="message" rows="5" placeholder="Tell me a little about what you have in mind..." required /></label>
+              <label>Subject<input name="subject" placeholder="" required /></label>
+              <label>Message<textarea name="message" rows="5" placeholder="" required /></label>
               {formState === 'success' && <p className="form-success"><CheckCircle2 size={16} /> Message sent successfully.</p>}
               {formState === 'email' && (
                 <div className="form-hint">
-                  <strong>Message not sent yet.</strong> Your device may open an email app with your details filled in. You must press Send in that app to send the message.
+                  <strong>Message not sent yet.</strong> Gmail should open with your details filled in. You must press Send in Gmail to send the message.
                   <div className="email-fallback-actions">
-                    <a href={emailDraft}>Open email draft again <ArrowUpRight size={14} /></a>
-                    <span>If nothing opens, configure a default email app or email {EMAIL} directly.</span>
+                    <a href={emailDraft} target="_blank" rel="noreferrer">Open Gmail draft again <ArrowUpRight size={14} /></a>
+                    <a href={mailAppDraft}>Try your default email app <ArrowUpRight size={14} /></a>
+                    <span>If neither opens, email {EMAIL} directly.</span>
                   </div>
                 </div>
               )}
               {formState === 'error' && <p className="form-error">{formError}</p>}
               <button className="button button-primary form-submit" type="submit">Send message <Send size={16} /></button>
-              <p className="form-footnote">Messages submit through Formspree when configured; otherwise your email app opens with the message ready to send.</p>
+              <p className="form-footnote">Messages submit through Formspree when configured; otherwise Gmail opens with the message ready to send.</p>
             </form>
           </div>
         </section>
@@ -376,8 +380,9 @@ function App() {
 
       <footer className="site-footer">
         <div className="page-wrap footer-inner">
-          <a href="#home" className="brand"><span className="brand-mark"><Terminal size={17} /></span><span>ravin<span className="text-sky-400">.</span></span></a>
-          <p>Designed to build. Built to automate. <span>© {new Date().getFullYear()} Ravin.</span></p>
+          <a href="#home" className="brand"><span className="brand-mark"><Terminal size={17} /></span><span>Ravin<span className="text-sky-400">.</span></span></a>
+          <p>Developed by Ravin © 2026
+DevOps Engineer | Cloud & Automation <span>© {new Date().getFullYear()} Ravin.</span></p>
           <a href="#home" className="back-top">Back to top ↑</a>
         </div>
       </footer>
